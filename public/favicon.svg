@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Missal Hotel">
+  <rect width="64" height="64" rx="16" fill="#702D42" />
+  <text
+    x="32"
+    y="43"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="34"
+    font-weight="700"
+    text-anchor="middle"
+    fill="#F4EFE8"
+  >M</text>
+  <rect x="21" y="46" width="22" height="2" rx="1" fill="#C1A16B" />
+</svg>

@@ -1,0 +1,1592 @@
+/* ==========================================================================
+   Missal Hotel — Design tokens
+   ========================================================================== */
+:root {
+  --color-vinho: #702d42;
+  --color-creme: #f4efe8;
+  --color-grafite: #1c1b1c;
+  --color-madeira: #765442;
+  --color-dourado: #c1a16b;
+  --color-dourado-hover: #ad8e5c;
+  --color-branco: #ffffff;
+
+  --font-display: "Gilda Display", Georgia, serif;
+  --font-text: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --panel-radius: 26px;
+  --panel-margin: 28px;
+
+  --focus-ring: 3px solid var(--color-dourado);
+  --focus-ring-offset: 3px;
+
+  --transition-fast: 0.2s ease;
+
+  --radius-media: 20px;
+  --radius-card: 16px;
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Reset básico
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--color-creme);
+  color: var(--color-creme);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+h1,
+p,
+ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+svg {
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   Acessibilidade — foco e skip link
+   ========================================================================== */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transform: translateY(-120%);
+  background: var(--color-dourado);
+  color: var(--color-grafite);
+  font-family: var(--font-text);
+  font-weight: 700;
+  padding: 14px 24px;
+  text-decoration: none;
+  transition: transform var(--transition-fast);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline-offset: -3px;
+}
+
+/* ==========================================================================
+   Botões
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 28px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.btn--primary {
+  background: var(--color-dourado);
+  color: var(--color-grafite);
+}
+
+.btn--primary:hover {
+  background: var(--color-dourado-hover);
+}
+
+.btn--outline {
+  background: transparent;
+  border-color: var(--color-dourado);
+  color: var(--color-creme);
+}
+
+.btn--outline:hover {
+  background: rgba(193, 161, 107, 0.12);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: rgba(244, 239, 232, 0.4);
+  color: var(--color-creme);
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.btn--ghost:hover {
+  border-color: var(--color-dourado);
+  color: var(--color-dourado);
+}
+
+.btn--compact {
+  min-height: 44px;
+}
+
+/* ==========================================================================
+   Estrutura geral do hero (container de rolagem + painel fixo)
+   ========================================================================== */
+.hero-frame {
+  position: relative;
+  height: 125vh;
+}
+
+.hero-frame__sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-grafite);
+}
+
+#hero-fim {
+  height: 1px;
+}
+
+/* ==========================================================================
+   Superfície que sobe no fim do scroll do hero (Fase C da timeline GSAP)
+   Estado de repouso: fora de tela (translateY(100%)). Fica exatamente assim
+   quando prefers-reduced-motion está ativo, pois o JS não inicializa a
+   timeline nesse caso — a transição visual passa a ser só a estática
+   (#hero-fim + .surface-transition), como hoje.
+   ========================================================================== */
+.hero__surface-rise {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  border-radius: var(--panel-radius) var(--panel-radius) 0 0;
+  transform: translateY(100%);
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(112, 45, 66, 0) 0%,
+    rgba(112, 45, 66, 0.35) 4%,
+    var(--color-creme) 14%,
+    var(--color-creme) 100%
+  );
+}
+
+/* Ativado/desativado via JS (ScrollTrigger onEnter/onLeave/onEnterBack/onLeaveBack)
+   apenas enquanto o hero está em viewport — não fica permanente no CSS. */
+.is-hero-animating {
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Cabeçalho
+   ========================================================================== */
+.site-header {
+  position: relative;
+  z-index: 3;
+  flex: 0 0 auto;
+  min-height: 68px;
+}
+
+.hero-frame__sticky #main-content {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+
+.site-header__inner {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  padding: 12px 16px;
+}
+
+.brand {
+  font-family: var(--font-text);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--color-creme);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Hero — seção e camadas de fundo
+   ========================================================================== */
+.hero {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.hero__media,
+.hero__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__media {
+  background: linear-gradient(135deg, var(--color-grafite) 0%, #2a1620 55%, var(--color-vinho) 145%);
+}
+
+.hero__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 82% 78%,
+    rgba(193, 161, 107, 0.16) 0%,
+    rgba(193, 161, 107, 0.07) 32%,
+    transparent 62%
+  );
+}
+
+.hero__noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+.hero__vignette {
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(28, 27, 28, 0.6) 0%,
+    rgba(28, 27, 28, 0) 22%,
+    rgba(28, 27, 28, 0) 68%,
+    rgba(28, 27, 28, 0.7) 100%
+  );
+}
+
+/* ==========================================================================
+   Conteúdo do hero
+   ========================================================================== */
+.hero__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 620px;
+  padding: 0 20px 4vh;
+}
+
+.hero__eyebrow {
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-dourado);
+  margin-bottom: 16px;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 8vw, 2.25rem);
+  line-height: 1.15;
+  color: var(--color-creme);
+  max-width: 22ch;
+}
+
+.hero__subtitle {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(244, 239, 232, 0.8);
+  max-width: 42ch;
+  margin-top: 20px;
+}
+
+.hero__highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.hero__highlights li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-creme);
+}
+
+.hero__highlight-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--color-dourado);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hero__ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.hero__ctas .btn {
+  width: 100%;
+  min-height: 50px;
+}
+
+/* ==========================================================================
+   Transição pós-hero
+   ========================================================================== */
+.surface-transition {
+  height: 12vh;
+  min-height: 90px;
+  background: var(--color-creme);
+}
+
+/* ==========================================================================
+   Tablet — 768px a 1199px
+   ========================================================================== */
+@media (min-width: 768px) {
+  :root {
+    --panel-margin: 18px;
+    --panel-radius: 20px;
+  }
+
+  .hero-frame {
+    height: 145vh;
+  }
+
+  .hero-frame__sticky {
+    margin: var(--panel-margin);
+    top: var(--panel-margin);
+    height: calc(100svh - (var(--panel-margin) * 2));
+    border-radius: var(--panel-radius);
+  }
+
+  .site-header {
+    min-height: 80px;
+  }
+
+  .site-header__inner {
+    flex-wrap: nowrap;
+    padding: 0 32px;
+  }
+
+  .brand {
+    font-size: 15px;
+  }
+
+  .hero__content {
+    max-width: 560px;
+    padding: 0 32px 6vh;
+  }
+
+  .hero__eyebrow {
+    font-size: 12px;
+  }
+
+  .hero__title {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    max-width: 20ch;
+  }
+
+  .hero__subtitle {
+    font-size: 16px;
+  }
+
+  .hero__highlights {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+    row-gap: 16px;
+  }
+
+  .hero__highlights li {
+    flex: 0 1 50%;
+    padding-right: 16px;
+  }
+
+  .hero__highlights li:last-child {
+    flex-basis: 100%;
+  }
+
+  .hero__ctas {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .hero__ctas .btn {
+    width: auto;
+  }
+}
+
+@media (min-width: 820px) {
+  .hero__ctas {
+    flex-wrap: nowrap;
+  }
+}
+
+/* ==========================================================================
+   Desktop — a partir de 1200px
+   ========================================================================== */
+@media (min-width: 1200px) {
+  :root {
+    --panel-margin: 28px;
+    --panel-radius: 26px;
+  }
+
+  .hero-frame {
+    height: 170vh;
+  }
+
+  .site-header {
+    height: 88px;
+  }
+
+  .hero__content {
+    max-width: 680px;
+    padding: 0 32px 8vh 56px;
+  }
+
+  .hero__eyebrow {
+    font-size: 13px;
+  }
+
+  .hero__title {
+    font-size: clamp(2.25rem, 5vw, 4.25rem);
+    line-height: 1.08;
+    max-width: 18ch;
+  }
+
+  .hero__subtitle {
+    font-size: 20px;
+    margin-top: 24px;
+  }
+
+  .hero__highlights {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 0;
+    row-gap: 12px;
+    margin-top: 40px;
+  }
+
+  .hero__highlights li {
+    flex: 0 1 auto;
+    padding-right: 18px;
+    margin-right: 18px;
+    border-right: 1px solid rgba(193, 161, 107, 0.5);
+  }
+
+  .hero__highlights li:last-child {
+    padding-right: 0;
+    margin-right: 0;
+    border-right: none;
+  }
+
+  .hero__ctas {
+    flex-direction: row;
+    margin-top: 40px;
+  }
+
+  .hero__ctas .btn {
+    width: auto;
+    min-height: 48px;
+  }
+}
+
+/* ==========================================================================
+   Container padrão das seções pós-hero
+   ========================================================================== */
+.section-container {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 20px;
+  padding-block: 64px;
+}
+
+@media (min-width: 768px) {
+  .section-container {
+    padding-inline: 32px;
+    padding-block: 88px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-container {
+    padding-inline: 56px;
+    padding-block: 120px;
+  }
+}
+
+/* ==========================================================================
+   Eyebrow compartilhado (seções pós-hero)
+   ========================================================================== */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+}
+
+.eyebrow--vinho {
+  color: var(--color-vinho);
+}
+
+.eyebrow--creme {
+  color: var(--color-creme);
+}
+
+.eyebrow__accent {
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-dourado);
+}
+
+@media (min-width: 768px) {
+  .eyebrow {
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .eyebrow {
+    font-size: 13px;
+  }
+}
+
+/* ==========================================================================
+   Placeholders de mídia (textura de ruído reaproveitada do hero)
+   ========================================================================== */
+.media-placeholder {
+  position: relative;
+  border-radius: var(--radius-media);
+  overflow: hidden;
+}
+
+.media-placeholder--a {
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(135deg, var(--color-vinho) 0%, var(--color-grafite) 100%);
+}
+
+.media-placeholder--b {
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(135deg, var(--color-madeira) 0%, var(--color-dourado) 100%);
+}
+
+.media-placeholder__noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* ==========================================================================
+   Seção 2 — Apresentação do hotel
+   ========================================================================== */
+#hotel,
+#quartos,
+#localizacao,
+#faq {
+  /* Corrige o contraste do :focus-visible global (dourado sobre fundo
+     escuro do hero) para vinho, adequado sobre os fundos creme/branco
+     destas seções. Não afeta o hero. #comodidades mantém o dourado padrão,
+     pois seu conteúdo focável fica sobre o painel escuro. */
+  --focus-ring: 3px solid var(--color-vinho);
+}
+
+.section-hotel {
+  background: var(--color-creme);
+}
+
+.section-hotel__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.section-hotel__text {
+  grid-column: 1;
+}
+
+.section-hotel__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--color-grafite);
+  line-height: 1.15;
+  font-size: clamp(1.5rem, 5vw, 1.75rem);
+  max-width: 18ch;
+}
+
+.section-hotel__lead {
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-grafite);
+  margin-top: 16px;
+  max-width: 52ch;
+}
+
+.section-hotel__infos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+  font-family: var(--font-text);
+  font-size: 15px;
+  color: var(--color-grafite);
+}
+
+@media (min-width: 768px) {
+  .section-hotel__grid {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 32px;
+    row-gap: 20px;
+  }
+
+  .section-hotel__text {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .media-placeholder--a {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .media-placeholder--b {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .section-hotel__title {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .section-hotel__lead {
+    font-size: 17px;
+  }
+
+  .section-hotel__infos {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .section-hotel__infos li {
+    padding-right: 20px;
+    margin-right: 20px;
+    border-right: 1px solid rgba(28, 27, 28, 0.13);
+  }
+
+  .section-hotel__infos li:last-child {
+    padding-right: 0;
+    margin-right: 0;
+    border-right: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-hotel__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 4fr);
+    column-gap: 40px;
+  }
+
+  .section-hotel__text {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .media-placeholder--a {
+    grid-column: 2;
+    grid-row: auto;
+  }
+
+  .media-placeholder--b {
+    grid-column: 3;
+    grid-row: auto;
+    margin-top: 88px;
+  }
+
+  .section-hotel__title {
+    font-size: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .section-hotel__lead {
+    font-size: 18px;
+  }
+}
+
+/* ==========================================================================
+   Seção 3 — Quartos
+   ========================================================================== */
+.section-quartos {
+  background: var(--color-creme);
+}
+
+.section-quartos__intro {
+  max-width: 640px;
+  margin-bottom: 40px;
+}
+
+.section-quartos__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--color-grafite);
+  line-height: 1.15;
+  font-size: clamp(1.5rem, 5vw, 1.75rem);
+}
+
+.section-quartos__lead {
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-grafite);
+  margin-top: 16px;
+}
+
+@media (min-width: 768px) {
+  .section-quartos__title {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .section-quartos__lead {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-quartos__title {
+    font-size: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .section-quartos__lead {
+    font-size: 18px;
+  }
+
+  .section-quartos__intro {
+    margin-bottom: 56px;
+  }
+}
+
+.section-quartos__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+@media (min-width: 1200px) {
+  .section-quartos__grid {
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 32px;
+    row-gap: 0;
+  }
+}
+
+.card-quarto {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-branco);
+  border-radius: var(--radius-card);
+  box-shadow: 0 12px 32px rgba(28, 27, 28, 0.08);
+  overflow: hidden;
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+
+.card-quarto__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.card-quarto__media--1 {
+  background: linear-gradient(120deg, var(--color-vinho) 0%, var(--color-grafite) 100%);
+}
+
+.card-quarto__media--2 {
+  background: linear-gradient(135deg, var(--color-madeira) 0%, var(--color-dourado) 100%);
+}
+
+.card-quarto__media--3 {
+  background: linear-gradient(150deg, var(--color-vinho) 0%, var(--color-madeira) 100%);
+}
+
+.card-quarto__body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+}
+
+.card-quarto__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--color-grafite);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  margin: 0 0 6px;
+}
+
+.card-quarto__capacity {
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-madeira);
+  margin: 0 0 20px;
+}
+
+.card-quarto__amenities {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.card-quarto__amenities li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-text);
+  font-size: 14px;
+  color: var(--color-grafite);
+}
+
+.card-quarto__icon {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--color-dourado);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card-quarto__cta {
+  margin-top: auto;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .card-quarto__cta {
+    width: auto;
+    align-self: flex-start;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-quarto:hover {
+    transform: translateY(-4px);
+    transition: transform 200ms ease-out;
+  }
+}
+
+/* ==========================================================================
+   Seção 4 — Café da manhã
+   ========================================================================== */
+.section-cafe {
+  background: var(--color-creme);
+}
+
+.section-cafe__card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.section-cafe__media,
+.section-cafe__panel {
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.section-cafe__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(90deg, var(--color-grafite) 0%, var(--color-vinho) 100%);
+}
+
+.section-cafe__panel {
+  background: var(--color-vinho);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.section-cafe__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--color-creme);
+  line-height: 1.15;
+  font-size: clamp(1.5rem, 5vw, 1.75rem);
+}
+
+.section-cafe__lead {
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(244, 239, 232, 0.85);
+  margin-top: 16px;
+  max-width: 48ch;
+}
+
+@media (min-width: 768px) {
+  .section-cafe__card {
+    grid-template-columns: 6fr 6fr;
+    gap: 0;
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  .section-cafe__media,
+  .section-cafe__panel {
+    border-radius: 0;
+  }
+
+  .section-cafe__media {
+    aspect-ratio: auto;
+  }
+
+  .section-cafe__panel {
+    padding: 48px 40px;
+    min-height: 480px;
+  }
+
+  .section-cafe__title {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .section-cafe__lead {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-cafe__card {
+    grid-template-columns: 7fr 5fr;
+  }
+
+  .section-cafe__panel {
+    padding: 56px;
+  }
+
+  .section-cafe__title {
+    font-size: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .section-cafe__lead {
+    font-size: 17px;
+  }
+}
+
+/* ==========================================================================
+   Seção 5 — Comodidades
+   ========================================================================== */
+.section-comodidades {
+  background: var(--color-creme);
+}
+
+.comodidades__panel {
+  background: var(--color-grafite);
+  border-radius: 24px;
+  padding: 40px 24px;
+}
+
+.comodidades__intro {
+  max-width: 640px;
+  margin-bottom: 32px;
+}
+
+.comodidades__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--color-creme);
+  line-height: 1.15;
+  font-size: clamp(1.5rem, 5vw, 1.75rem);
+}
+
+.comodidades__lead {
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(244, 239, 232, 0.8);
+  margin-top: 16px;
+  max-width: 48ch;
+}
+
+.comodidades__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 24px;
+  row-gap: 24px;
+}
+
+.comodidades__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-creme);
+  padding-bottom: 12px;
+  border-bottom: 1px solid transparent;
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+.comodidades__item--highlight {
+  font-weight: 600;
+  border-bottom-color: rgba(193, 161, 107, 0.35);
+}
+
+@media (min-width: 480px) {
+  .comodidades__grid {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 28px;
+  }
+}
+
+@media (min-width: 768px) {
+  .comodidades__panel {
+    padding: 48px 40px;
+  }
+
+  .comodidades__title {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .comodidades__lead {
+    font-size: 16px;
+  }
+
+  .comodidades__intro {
+    margin-bottom: 40px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .comodidades__panel {
+    padding: 56px 64px;
+  }
+
+  .comodidades__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .comodidades__title {
+    font-size: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .comodidades__lead {
+    font-size: 17px;
+  }
+}
+
+/* ==========================================================================
+   Seção 6 — Localização
+   ========================================================================== */
+.section-localizacao {
+  background: var(--color-creme);
+}
+
+.section-localizacao__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+.section-localizacao__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--color-grafite);
+  line-height: 1.15;
+  font-size: clamp(1.5rem, 5vw, 1.75rem);
+  max-width: 18ch;
+}
+
+.section-localizacao__address {
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--color-vinho);
+  margin-top: 16px;
+}
+
+.section-localizacao__lead {
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-grafite);
+  margin-top: 12px;
+  max-width: 52ch;
+}
+
+.section-localizacao__infos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+  font-family: var(--font-text);
+  font-size: 15px;
+  color: var(--color-grafite);
+}
+
+.section-localizacao__cta {
+  margin-top: 32px;
+}
+
+.section-localizacao__panel {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-media);
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--color-madeira) 0%, var(--color-vinho) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-localizacao__marker {
+  position: relative;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+}
+
+.section-localizacao__marker-dot {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-dourado);
+  box-shadow: 0 0 0 6px rgba(193, 161, 107, 0.18);
+}
+
+.section-localizacao__marker-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-dourado);
+  animation: marker-pulse 2.6s ease-out infinite;
+}
+
+@keyframes marker-pulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .section-localizacao__grid {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 48px;
+    align-items: center;
+  }
+
+  .section-localizacao__title {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .section-localizacao__lead {
+    font-size: 16px;
+  }
+
+  .section-localizacao__panel {
+    aspect-ratio: 1 / 1;
+    min-height: 340px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-localizacao__grid {
+    column-gap: 64px;
+  }
+
+  .section-localizacao__title {
+    font-size: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .section-localizacao__lead {
+    font-size: 17px;
+  }
+}
+
+/* ==========================================================================
+   Seção 7 — Perguntas frequentes
+   ========================================================================== */
+.section-faq {
+  background: var(--color-creme);
+}
+
+.section-faq__intro {
+  max-width: 640px;
+  margin-bottom: 8px;
+}
+
+.section-faq__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--color-grafite);
+  line-height: 1.15;
+  font-size: clamp(1.5rem, 5vw, 1.75rem);
+}
+
+.section-faq__list {
+  margin-top: 24px;
+}
+
+.faq-item {
+  border-bottom: 1px solid rgba(28, 27, 28, 0.13);
+}
+
+.faq-item__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 20px 4px;
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--color-grafite);
+}
+
+.faq-item__summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item__summary::after {
+  content: "+";
+  flex: 0 0 auto;
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--color-vinho);
+  transition: transform 200ms var(--ease-reveal);
+}
+
+.faq-item[open] > .faq-item__summary::after {
+  transform: rotate(45deg);
+}
+
+.faq-item__answer {
+  margin: 0 0 20px;
+  padding: 0 4px;
+  max-width: 65ch;
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(28, 27, 28, 0.8);
+}
+
+@media (min-width: 768px) {
+  .section-faq__title {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .section-faq__list {
+    margin-top: 32px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-faq__title {
+    font-size: clamp(2rem, 3vw, 2.75rem);
+  }
+}
+
+/* ==========================================================================
+   Seção 8 — CTA final de reserva
+   ========================================================================== */
+.section-reserva {
+  background: var(--color-vinho);
+}
+
+.section-reserva__container {
+  max-width: 780px;
+}
+
+.section-reserva__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--color-creme);
+  line-height: 1.15;
+  font-size: clamp(1.75rem, 6vw, 2.25rem);
+  max-width: 18ch;
+}
+
+.section-reserva__lead {
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(244, 239, 232, 0.85);
+  margin-top: 16px;
+  max-width: 48ch;
+}
+
+.section-reserva__ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.section-reserva__ctas .btn {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .section-reserva__title {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+  }
+
+  .section-reserva__lead {
+    font-size: 16px;
+  }
+
+  .section-reserva__ctas {
+    flex-direction: row;
+    margin-top: 40px;
+  }
+
+  .section-reserva__ctas .btn {
+    width: auto;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-reserva__title {
+    font-size: clamp(2rem, 3vw, 3rem);
+  }
+
+  .section-reserva__lead {
+    font-size: 18px;
+  }
+}
+
+/* ==========================================================================
+   Seção 9 — Rodapé
+   ========================================================================== */
+.site-footer {
+  background: var(--color-grafite);
+}
+
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+.site-footer__brand {
+  font-family: var(--font-text);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: var(--color-creme);
+  margin: 0 0 12px;
+}
+
+.site-footer__address {
+  font-family: var(--font-text);
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(244, 239, 232, 0.75);
+  max-width: 32ch;
+}
+
+.site-footer__col-title {
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-dourado);
+  margin: 0 0 16px;
+}
+
+.site-footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.site-footer__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-text);
+  font-size: 14px;
+  color: rgba(244, 239, 232, 0.85);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.site-footer__links a:hover {
+  color: var(--color-dourado);
+}
+
+.site-footer__bottom {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(244, 239, 232, 0.12);
+}
+
+.site-footer__bottom small {
+  font-family: var(--font-text);
+  font-size: 13px;
+  color: rgba(244, 239, 232, 0.6);
+}
+
+@media (min-width: 768px) {
+  .site-footer__grid {
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 32px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .site-footer__grid {
+    column-gap: 64px;
+  }
+}
+
+/* ==========================================================================
+   Revelação de entrada (fade + translateY) — IntersectionObserver em main.js
+   ========================================================================== */
+[data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Estado oculto (pré-animação) só existe quando o JS confirma que vai
+   controlar a revelação — ver "document.documentElement.classList.add
+   ('js-reveal-ready')" no início de main.js. Sem JS, [data-reveal] fica
+   sempre visível (ver regra acima), evitando conteúdo permanentemente
+   invisível caso o bundle não carregue/execute. */
+.js-reveal-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms var(--ease-reveal), transform 600ms var(--ease-reveal);
+}
+
+.js-reveal-ready [data-reveal].is-inview {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Parallax discreto (seções 2 e 4) — transform aplicado via main.js,
+   sem transition CSS para acompanhar o scroll 1:1.
+   ========================================================================== */
+.is-parallax-active {
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Movimento reduzido
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Sem a timeline GSAP (não inicializada nesse modo), a trilha extra de
+     scroll do .hero-frame (125vh/145vh/170vh, usada para "empurrar" a
+     animação do painel sticky) fica sobrando como espaço vazio abaixo do
+     painel, que já mostra seu conteúdo estático completo. Reduzindo para a
+     altura visual do próprio painel sticky (100svh), a transição estática
+     (#hero-fim + .surface-transition) passa a encostar direto no fim do
+     hero, sem alterar a timeline normal (motion ativo). */
+  .hero-frame {
+    height: 100svh;
+  }
+}
