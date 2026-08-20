@@ -93,6 +93,27 @@
         <main id="main-content">
           <section class="hero" aria-label="Apresentação do Missal Hotel">
             <div class="hero__media" aria-hidden="true">
+              <picture class="hero__media-photo">
+                <source media="(max-width: 640px)" srcset="/media/hero/hero-fachada-mobile.webp" />
+                <img
+                  src="/media/hero/hero-fachada-poster.webp"
+                  alt=""
+                  width="1280"
+                  height="720"
+                />
+              </picture>
+              <video
+                class="hero__media-video"
+                muted
+                loop
+                playsinline
+                preload="none"
+                tabindex="-1"
+                poster="/media/hero/hero-fachada-poster.webp"
+                data-src="hero/hero-fachada-desktop.mp4"
+                width="1280"
+                height="720"
+              ></video>
               <div class="hero__glow"></div>
               <div class="hero__noise"></div>
             </div>
@@ -179,14 +200,28 @@
           </ul>
         </div>
 
-        <!-- Placeholder: substituir futuramente por assets/hotel-fachada.webp -->
-        <div class="media-placeholder media-placeholder--a" data-parallax aria-hidden="true">
-          <div class="media-placeholder__noise"></div>
+        <div class="media-placeholder media-placeholder--a media-placeholder--photo" data-parallax>
+          <img
+            class="media-placeholder__image"
+            src="/media/hotel/recepcao.webp"
+            alt="Recepção moderna do Missal Hotel em Aparecida"
+            width="600"
+            height="338"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
 
-        <!-- Placeholder: substituir futuramente por assets/hotel-recepcao.webp -->
-        <div class="media-placeholder media-placeholder--b" data-parallax aria-hidden="true">
-          <div class="media-placeholder__noise"></div>
+        <div class="media-placeholder media-placeholder--b media-placeholder--photo" data-parallax>
+          <img
+            class="media-placeholder__image"
+            src="/media/hotel/restaurante.webp"
+            alt="Salão de refeições do Missal Hotel"
+            width="600"
+            height="338"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </div>
     </section>
@@ -206,9 +241,15 @@
 
         <div class="section-quartos__grid">
           <article class="card-quarto" data-reveal style="--i: 0">
-            <div class="card-quarto__media card-quarto__media--1" aria-hidden="true">
-              <!-- Placeholder: substituir por assets/quarto-duplo.webp -->
-              <div class="media-placeholder__noise"></div>
+            <div class="card-quarto__media card-quarto__media--1 card-quarto__media--photo">
+              <img
+                src="/media/quartos/quarto-duplo.webp"
+                alt="Quarto Duplo do Missal Hotel"
+                width="600"
+                height="338"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
             <div class="card-quarto__body">
               <h3 class="card-quarto__title">Quarto Duplo</h3>
@@ -249,9 +290,15 @@
           </article>
 
           <article class="card-quarto" data-reveal style="--i: 1">
-            <div class="card-quarto__media card-quarto__media--2" aria-hidden="true">
-              <!-- Placeholder: substituir por assets/quarto-triplo.webp -->
-              <div class="media-placeholder__noise"></div>
+            <div class="card-quarto__media card-quarto__media--2 card-quarto__media--photo">
+              <img
+                src="/media/quartos/quarto-triplo.webp"
+                alt="Quarto Triplo do Missal Hotel"
+                width="600"
+                height="338"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
             <div class="card-quarto__body">
               <h3 class="card-quarto__title">Quarto Triplo</h3>
@@ -292,9 +339,15 @@
           </article>
 
           <article class="card-quarto" data-reveal style="--i: 2">
-            <div class="card-quarto__media card-quarto__media--3" aria-hidden="true">
-              <!-- Placeholder: substituir por assets/quarto-quadruplo.webp -->
-              <div class="media-placeholder__noise"></div>
+            <div class="card-quarto__media card-quarto__media--3 card-quarto__media--photo">
+              <img
+                src="/media/quartos/quarto-quaduplo.webp"
+                alt="Quarto Quádruplo do Missal Hotel"
+                width="600"
+                height="338"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
             <div class="card-quarto__body">
               <h3 class="card-quarto__title">Quarto Quádruplo</h3>
@@ -340,9 +393,15 @@
     <section id="cafe-da-manha" class="section-cafe" aria-label="Café da manhã no Missal Hotel">
       <div class="section-container">
         <div class="section-cafe__card">
-          <!-- Placeholder: substituir por assets/cafe-da-manha.webp -->
-          <div class="section-cafe__media" data-parallax aria-hidden="true">
-            <div class="media-placeholder__noise"></div>
+          <div class="section-cafe__media section-cafe__media--photo" data-parallax>
+            <img
+              src="/media/cafe/cafe-buffet.webp"
+              alt="Buffet de café da manhã do Missal Hotel"
+              width="600"
+              height="338"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
           <div class="section-cafe__panel">
             <p class="eyebrow eyebrow--creme">
@@ -584,6 +643,15 @@
       <div class="section-container site-footer__container">
         <div class="site-footer__grid">
           <div class="site-footer__col">
+            <img
+              class="site-footer__logo"
+              src="/media/marca/logo-missal-hotel.png"
+              alt="Missal Hotel"
+              width="165"
+              height="165"
+              loading="lazy"
+              decoding="async"
+            />
             <p class="site-footer__brand">MISSAL HOTEL</p>
             <p class="site-footer__address">Rua São José, 74 — Aparecida/SP — CEP 12570-067</p>
           </div>

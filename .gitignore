@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Pacote de origem das mídias (curadoria) — as mídias selecionadas já
+# foram copiadas para public/media/, que é a pasta versionada.
+missal-hotel-midias-selecionadas/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

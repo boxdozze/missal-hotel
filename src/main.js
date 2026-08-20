@@ -273,6 +273,75 @@ function setupHeroScrollAnimation() {
 setupHeroScrollAnimation();
 
 /* ==========================================================================
+   Vídeo de fundo do Hero (fachada real)
+   Carregado e reproduzido somente em desktop (>=641px) e sem
+   prefers-reduced-motion. No celular, apenas a imagem estática
+   (hero-fachada-mobile.webp, via <picture>/CSS) é exibida — o <video>
+   nunca recebe "src" nesse caso, então o MP4 nunca é baixado.
+   ========================================================================== */
+const heroMedia = document.querySelector(".hero__media");
+const heroVideo = heroMedia ? heroMedia.querySelector(".hero__media-video") : null;
+const heroDesktopQuery = window.matchMedia("(min-width: 641px)");
+
+function heroVideoShouldPlay() {
+  return Boolean(heroVideo) && heroDesktopQuery.matches && !reduceMotionQuery.matches;
+}
+
+function activateHeroVideo() {
+  if (!heroVideo) return;
+  if (!heroVideo.getAttribute("src")) {
+    heroVideo.setAttribute("src", `${import.meta.env.BASE_URL}media/${heroVideo.dataset.src}`);
+    heroVideo.load();
+  }
+  heroMedia.classList.add("hero__media--video-ready");
+  heroVideo.play().catch(() => {});
+}
+
+function deactivateHeroVideo() {
+  if (!heroVideo) return;
+  heroMedia.classList.remove("hero__media--video-ready");
+  heroVideo.pause();
+  if (heroVideo.getAttribute("src")) {
+    // Remove o src ao sair das condições (ex.: redimensionar para mobile ou
+    // ativar movimento reduzido) para garantir que nenhum byte do MP4
+    // continue sendo baixado/reproduzido fora do desktop com motion ativo.
+    heroVideo.removeAttribute("src");
+    heroVideo.load();
+  }
+}
+
+function syncHeroVideoState() {
+  if (heroVideoShouldPlay()) {
+    activateHeroVideo();
+  } else {
+    deactivateHeroVideo();
+  }
+}
+
+if (heroVideo) {
+  syncHeroVideoState();
+  heroDesktopQuery.addEventListener("change", syncHeroVideoState);
+
+  // Pausa o vídeo quando o Hero sai da área visível; retoma ao voltar,
+  // sempre respeitando as condições de desktop e movimento reduzido.
+  const heroVisibilityObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!heroVideo.getAttribute("src")) return;
+        if (entry.isIntersecting && heroVideoShouldPlay()) {
+          heroVideo.play().catch(() => {});
+        } else {
+          heroVideo.pause();
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+  const heroFrameEl = document.querySelector(".hero-frame");
+  if (heroFrameEl) heroVisibilityObserver.observe(heroFrameEl);
+}
+
+/* ==========================================================================
    Revelação de entrada das seções pós-hero (fade + translateY)
    Dispara uma vez por elemento, via IntersectionObserver. Sem GSAP.
    ========================================================================== */
@@ -389,4 +458,6 @@ reduceMotionQuery.addEventListener("change", (event) => {
     document.querySelectorAll("[data-reveal]:not(.is-inview)").forEach((el) => revealObserver.observe(el));
     initParallax();
   }
+
+  syncHeroVideoState();
 });
